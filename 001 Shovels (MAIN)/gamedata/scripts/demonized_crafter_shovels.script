@@ -1,0 +1,23 @@
+craft_recipes = {
+	mmf_shovel_old = {
+		wpn_axe2 = {
+			"sharpening_stones:3, mmf_shovel_old>=0.20",
+		},
+	},
+	mmf_shovel_mili = {
+		wpn_axe2 = {
+			"sharpening_stones:3, mmf_shovel_mili>=0.20",
+		},
+	}
+}
+args = {
+    craft_strings = {
+        mmf_shovel_old = {
+            wpn_axe2 = "st_sharpen_shovel"
+        },
+		mmf_shovel_mili = {
+            wpn_axe2 = "st_sharpen_shovel"
+        }
+    }
+}
+demonized_crafter.add_craft_recipe(craft_recipes, args)

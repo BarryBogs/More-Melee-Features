@@ -1,0 +1,26 @@
+-- Melee Blocking Script by BarryBogs for Heavy Melee Rework
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_before_hit", actor_on_before_hit)
+--	RegisterScriptCallback("actor_on_weapon_lower", actor_on_weapon_lower)
+--  RegisterScriptCallback("actor_on_weapon_raise", actor_on_weapon_raise)
+end
+
+function actor_on_before_hit(s_hit)
+    local wpn = db.actor:active_item()
+    if not wpn then return end
+    if game.actor_weapon_lowered() == false then return end
+    if not heavy_melee[wpn:section()] then return end
+    if s_hit.type == 5 or s_hit.type == 6 then
+            local melee_blocking = 0.66
+            s_hit.power = s_hit.power * melee_blocking
+    end
+end
+
+heavy_melee = {
+    wpn_axe = true,
+    wpn_axe2 = true,
+    wpn_axe3 = true,
+    mmf_shovel_mili = true,
+    mmf_shovel_old = true,
+}

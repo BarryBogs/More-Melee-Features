@@ -1,0 +1,225 @@
+-- Script by Utjan
+-- Degrades melee weapons on hitting geometry, physics objects or stalkers/mutants.
+-- Uses thial's ray script for finding geometry.
+
+function on_game_start()
+    RegisterScriptCallback("npc_on_before_hit", on_enemy_hit)
+    RegisterScriptCallback("monster_on_before_hit", on_enemy_hit)
+    RegisterScriptCallback("actor_on_hud_animation_mark", actor_on_hud_animation_mark)
+    RegisterScriptCallback("physic_object_on_hit_callback", physic_object_on_hit_callback)
+end
+
+-- Geometry is terrain, walls, trees, the map, etc
+geometry_degrade = {
+    wpn_knife = 0.01,
+    wpn_knife2 = 0.00875,
+    wpn_knife3 = 0.0075,
+    wpn_knife4 = 0.00625,
+    wpn_knife5 = 0.005,
+    wpn_axe = 0.01,
+    wpn_axe2 = 0.0075,
+    wpn_axe3 = 0.005
+}
+
+-- Physics object like the breakable wooden boxes
+phys_degrade = {
+    wpn_knife = 0.01,
+    wpn_knife2 = 0.00875,
+    wpn_knife3 = 0.0075,
+    wpn_knife4 = 0.00625,
+    wpn_knife5 = 0.005,
+    wpn_axe = 0.01,
+    wpn_axe2 = 0.0075,
+    wpn_axe3 = 0.005
+}
+
+-- Stalkers and mutants
+enemy_degrade = {
+    wpn_knife = 0.01,
+    wpn_knife2 = 0.00875,
+    wpn_knife3 = 0.0075,
+    wpn_knife4 = 0.00625,
+    wpn_knife5 = 0.005,
+    wpn_axe = 0.01,
+    wpn_axe2 = 0.0075,
+    wpn_axe3 = 0.005
+}
+
+-- Multiplies condition loss on light attack. For modders to modify with scripts.
+light_atk_degrade_mult = {
+    wpn_knife = 1,
+    wpn_knife2 = 1,
+    wpn_knife3 = 1,
+    wpn_knife4 = 1,
+    wpn_knife5 = 1,
+    wpn_axe = 1,
+    wpn_axe2 = 1,
+    wpn_axe3 = 1,
+}
+
+-- Multiplies condition loss on heavy attack. For modders to modify with scripts.
+heavy_atk_degrade_mult = {
+    wpn_knife = 1,
+    wpn_knife2 = 1,
+    wpn_knife3 = 1,
+    wpn_knife4 = 1,
+    wpn_knife5 = 1,
+    wpn_axe = 1,
+    wpn_axe2 = 1,
+    wpn_axe3 = 1,
+}
+
+valid_knife = {
+    wpn_knife = true,
+    wpn_knife2 = true,
+    wpn_knife3 = true,
+    wpn_knife4 = true,
+    wpn_knife5 = true,
+}
+
+valid_axe = {
+    wpn_axe = true,
+    wpn_axe2 = true,
+    wpn_axe3 = true,
+}
+
+local last_value
+local last_wpn_section
+
+function actor_on_hud_animation_mark(value , name)
+    last_value = value -- Indicates light or heavy attack
+    local wpn = db.actor:active_item()
+    if not wpn then return end
+    last_wpn_section = wpn:section()
+
+    if last_wpn_section and last_value and IsWeapon(wpn) and (IsItem("fake_ammo_wpn",last_wpn_section)) then
+        local range = get_melee_range(last_wpn_section, last_value)
+
+        local ray = thial_ray.geometry_ray(range + 1, range, nil, 1+2+4+8)
+
+        local pos = device().cam_pos
+        local angle = device().cam_dir
+
+        local result = ray:get(vector():set(pos), angle)
+
+        if result.in_contact then
+            CreateTimeEvent("melee_degrade","geometry_degrade", 0.1, function ()
+                if not geometry_degrade[last_wpn_section] then return true end
+                local degrade_val = geometry_degrade[last_wpn_section]
+                local multiplier = valid_axe[last_wpn_section] and get_config("axe_loss_mult") or valid_knife[last_wpn_section] and get_config("knife_loss_mult")
+                multiplier = multiplier * get_config("geometry_loss_mult")
+                if last_value == 5 then
+                    multiplier = multiplier * get_config("light_loss_mult") * light_atk_degrade_mult[last_wpn_section]
+                elseif last_value == 6 then
+                    multiplier = multiplier * get_config("heavy_loss_mult") * heavy_atk_degrade_mult[last_wpn_section]
+                end
+                degrade_val = degrade_val * multiplier
+
+                --printf("degrade by " .. degrade_val)
+                utils_item.degrade(wpn, degrade_val)
+                last_value = nil
+                last_wpn_section = nil
+                return true
+            end)
+            return last_wpn_section
+        end
+    end
+end
+
+function physic_object_on_hit_callback(obj, amount, local_direction, who, bone_index)
+    local wpn = db.actor:active_item()
+    if not wpn then return end
+
+    if last_wpn_section and last_value and IsWeapon(wpn) and (IsItem("fake_ammo_wpn",wpn:section())) then
+        if not phys_degrade[last_wpn_section] then return end
+        local degrade_val = phys_degrade[last_wpn_section]
+        local multiplier = valid_axe[last_wpn_section] and get_config("axe_loss_mult") or valid_knife[last_wpn_section] and get_config("knife_loss_mult")
+        multiplier = multiplier * get_config("phys_loss_mult")
+        if last_value == 5 then
+            multiplier = multiplier * get_config("light_loss_mult") * light_atk_degrade_mult[last_wpn_section]
+        elseif last_value == 6 then
+            multiplier = multiplier * get_config("heavy_loss_mult") * heavy_atk_degrade_mult[last_wpn_section]
+        end
+        degrade_val = degrade_val * multiplier
+
+        --printf("degrade by " .. degrade_val)
+        utils_item.degrade(wpn, degrade_val)
+        last_value = nil
+        last_wpn_section = nil
+        RemoveTimeEvent("melee_degrade","geometry_degrade")
+        return last_wpn_section
+    end
+end
+
+function on_enemy_hit(npc,shit,bone_id,flags)
+    if not (shit.draftsman and shit.draftsman:id() == AC_ID) then return end
+    local wpn = db.actor:active_item()
+    if not wpn then return end
+
+    if last_wpn_section and last_value and IsWeapon(wpn) and (IsItem("fake_ammo_wpn",wpn:section())) then
+        if not enemy_degrade[last_wpn_section] then return end
+        local degrade_val = enemy_degrade[last_wpn_section]
+        local multiplier = valid_axe[last_wpn_section] and get_config("axe_loss_mult") or valid_knife[last_wpn_section] and get_config("knife_loss_mult")
+        multiplier = multiplier * get_config("enemy_loss_mult")
+        if last_value == 5 then
+            multiplier = multiplier * get_config("light_loss_mult") * light_atk_degrade_mult[last_wpn_section]
+        elseif last_value == 6 then
+            multiplier = multiplier * get_config("heavy_loss_mult") * heavy_atk_degrade_mult[last_wpn_section]
+        end
+        degrade_val = degrade_val * multiplier
+
+        --printf("degrade by " .. degrade_val)
+        utils_item.degrade(wpn, degrade_val)
+        last_value = nil
+        last_wpn_section = nil
+        RemoveTimeEvent("melee_degrade","geometry_degrade")
+        return last_wpn_section
+    end
+end
+
+function get_melee_range(sec, value)
+    local range = 0
+    if value == 5 then
+        local dist = SYS_GetParam(2, sec, "spash1_dist")
+        local radius = SYS_GetParam(2, sec, "spash1_radius")
+        range = dist + radius
+    elseif value == 6 then
+        local dist = SYS_GetParam(2, sec, "spash2_dist")
+        local radius = SYS_GetParam(2, sec, "spash2_radius")
+        range = dist + radius
+    end
+    return range
+end
+
+-- MCM
+local defaults = {
+    ["axe_loss_mult"] = 1,
+    ["knife_loss_mult"] = 1,
+    ["geometry_loss_mult"] = 1,
+    ["phys_loss_mult"] = 1,
+    ["enemy_loss_mult"] = 2,
+    ["light_loss_mult"] = 1,
+    ["heavy_loss_mult"] = 2,
+}
+
+function get_config(key)
+    local opt = ui_mcm and ui_mcm.get("melee_degrade_onhit/"..key) 
+    if opt ~= nil then return opt else return defaults[key] end
+ end
+
+function on_mcm_load()
+    op = { id= "melee_degrade_onhit",sh=true ,gr={
+            {id = "title",type= "slide",link= "ui_options_slider_gameplay_diff",text="ui_mcm_melee_degrade_onhit_title",size= {512,50},spacing= 20 },
+            {id = "axe_loss_mult", type = "track", val = 2, min=0.1,max=5,step=0.1, def = 1},
+            {id = "knife_loss_mult", type = "track", val = 2, min=0.1,max=5,step=0.1, def = 1},
+            { id = "line"	     			    , type = "line" },
+            {id = "geometry_loss_mult", type = "track", val = 2, min=0.1,max=5,step=0.1, def = 1},
+            {id = "phys_loss_mult", type = "track", val = 2, min=0.1,max=5,step=0.1, def = 1},
+            {id = "enemy_loss_mult", type = "track", val = 2, min=0.1,max=5,step=0.1, def = 2},
+            { id = "line"	     			    , type = "line" },
+            {id = "light_loss_mult", type = "track", val = 2, min=0.1,max=5,step=0.1, def = 1},
+            {id = "heavy_loss_mult", type = "track", val = 2, min=0.1,max=5,step=0.1, def = 2},
+        }
+    }
+    return op
+end

@@ -1,0 +1,18 @@
+local from_to = {
+    ["shovel_old"] = "mmf_shovel_old",
+    ["shovel_mili"] = "mmf_shovel_mili"
+}
+
+
+function item_rack(obj)
+    local sec = obj:section()
+    local p = obj:parent() or db.actor
+    if from_to[sec] then
+        alife_release(obj)
+        alife_create_item(from_to[sec], p)
+    end
+end
+
+function on_game_start()
+	RegisterScriptCallback("actor_item_to_ruck",item_rack)
+end

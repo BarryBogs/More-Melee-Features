@@ -1,0 +1,43 @@
+function on_game_start()
+    if melee_degrade_onhit_mcm then
+        melee_degrade_onhit_mcm.valid_axe["wpn_axe"] = true
+        melee_degrade_onhit_mcm.heavy_atk_degrade_mult["wpn_axe"] = 1.2
+        melee_degrade_onhit_mcm.light_atk_degrade_mult["wpn_axe"] = 1.0         --  Axe
+        melee_degrade_onhit_mcm.enemy_degrade["wpn_axe"] = 0.01
+        melee_degrade_onhit_mcm.phys_degrade["wpn_axe"] = 0.005
+        melee_degrade_onhit_mcm.geometry_degrade["wpn_axe"] = 0.005
+
+        melee_degrade_onhit_mcm.valid_axe["wpn_axe3"] = true
+        melee_degrade_onhit_mcm.heavy_atk_degrade_mult["wpn_axe3"] = 1.2
+        melee_degrade_onhit_mcm.light_atk_degrade_mult["wpn_axe3"] = 1.0           -- Sledge
+        melee_degrade_onhit_mcm.enemy_degrade["wpn_axe3"] = 0.0007
+        melee_degrade_onhit_mcm.phys_degrade["wpn_axe3"] = 0.0001
+        melee_degrade_onhit_mcm.geometry_degrade["wpn_axe3"] = 0.0001
+
+        melee_degrade_onhit_mcm.valid_axe["mmf_shovel_mili"] = true
+        melee_degrade_onhit_mcm.heavy_atk_degrade_mult["mmf_shovel_mili"] = 1.2
+        melee_degrade_onhit_mcm.light_atk_degrade_mult["mmf_shovel_mili"] = 1.0         
+        melee_degrade_onhit_mcm.enemy_degrade["mmf_shovel_mili"] = 0.04                 -- Mili Shovel
+        melee_degrade_onhit_mcm.phys_degrade["mmf_shovel_mili"] = 0.02
+        melee_degrade_onhit_mcm.geometry_degrade["mmf_shovel_mili"] = 0.02
+
+        melee_degrade_onhit_mcm.valid_axe["mmf_shovel_old"] = true
+        melee_degrade_onhit_mcm.heavy_atk_degrade_mult["mmf_shovel_old"] = 1.2
+        melee_degrade_onhit_mcm.light_atk_degrade_mult["mmf_shovel_old"] = 1.0
+        melee_degrade_onhit_mcm.enemy_degrade["mmf_shovel_old"] = 0.04                     -- Old Shovel
+        melee_degrade_onhit_mcm.phys_degrade["mmf_shovel_old"] = 0.02
+        melee_degrade_onhit_mcm.geometry_degrade["mmf_shovel_old"] = 0.02
+
+        melee_degrade_onhit_mcm.valid_axe["wpn_axe2"] = true
+        melee_degrade_onhit_mcm.heavy_atk_degrade_mult["wpn_axe2"] = 1.2
+        melee_degrade_onhit_mcm.light_atk_degrade_mult["wpn_axe2"] = 1.0
+        melee_degrade_onhit_mcm.enemy_degrade["wpn_axe2"] = 0.04                        -- Sharp Shovel
+        melee_degrade_onhit_mcm.phys_degrade["wpn_axe2"] = 0.02
+        melee_degrade_onhit_mcm.geometry_degrade["wpn_axe2"] = 0.02
+        --[[
+        for section, value in pairs(geometry_degrade) do
+            geometry_degrade[section] = geometry_degrade[section] * 2
+        end
+        ]]--
+    end
+end
