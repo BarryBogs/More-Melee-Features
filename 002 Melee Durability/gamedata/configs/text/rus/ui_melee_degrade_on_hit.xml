@@ -1,29 +1,29 @@
 <string_table>
     <string id="ui_mcm_melee_degrade_onhit_title">
-        <text>Melee Degrade Configuration</text>
+        <text>Конфигурация ухудшения в ближнем бою</text>
     </string>
     <string id="ui_mcm_menu_melee_degrade_onhit">
-        <text>Melee Degrade On Hit</text>
+        <text>Рукопашный бой Ухудшается при попадании</text>
     </string>
     <string id="ui_mcm_melee_degrade_onhit_axe_loss_mult">
-        <text>Axe Degrade Multiplier</text>
+        <text>Множитель деградации топора</text>
     </string>
     <string id="ui_mcm_melee_degrade_onhit_knife_loss_mult">
-        <text>Knife Degrade Multiplier</text>
+        <text>Множитель деградации ножа</text>
     </string>
     <string id="ui_mcm_melee_degrade_onhit_geometry_loss_mult">
-        <text>Hard Surface Degrade Multiplier</text>
+        <text>Множитель деградации твердой поверхности</text>
     </string>
     <string id="ui_mcm_melee_degrade_onhit_phys_loss_mult">
-        <text>Object Degrade Multiplier</text>
+        <text>Множитель ухудшения состояния объекта</text>
     </string>
     <string id="ui_mcm_melee_degrade_onhit_enemy_loss_mult">
-        <text>Enemy Degrade Multiplier</text>
+        <text>Множитель деградации противника</text>
     </string>
      <string id="ui_mcm_melee_degrade_onhit_light_loss_mult">
-        <text>Light Attack Degrade Multiplier</text>
+        <text>Множитель ухудшения световой атаки</text>
     </string>
     <string id="ui_mcm_melee_degrade_onhit_heavy_loss_mult">
-        <text>Heavy Attack Degrade Multiplier</text>
+        <text>Тяжелая атака Ухудшает множитель</text>
     </string>
 </string_table>

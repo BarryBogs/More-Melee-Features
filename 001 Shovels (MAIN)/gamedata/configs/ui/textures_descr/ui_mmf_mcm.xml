@@ -1,0 +1,6 @@
+<w>
+	<file name = "ui\mmf_mcm_banners.dds">
+        <texture id = "degrade_mcm_banner"		x="0"	y="0"	width="1024"	height="67" />
+        <texture id = "hitstop_mcm_banner"		x="0"	y="70"	width="1024"	height="67" />
+    </file>
+</w>

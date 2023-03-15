@@ -1,0 +1,80 @@
+-- Script by Aoldri, edited it Haruka & BarryBogs
+
+local melee_hitstop = {
+    ["wpn_axe"] = true,
+    ["wpn_axe2"] = true,
+    ["wpn_axe3"] = true,
+    ["wpn_knife"] = true,
+    ["wpn_knife2"] = true,
+    ["wpn_knife3"] = true,
+    ["wpn_knife4"] = true,
+    ["wpn_knife5"] = true,
+    ["mmf_shovel_mili"] = true,
+    ["mmf_shovel_old"] = true
+}
+
+local snd_axe = sound_object("weapons\\axe\\axe_hit")
+
+-- settings
+local slowmo_resume_time = 0.06
+local slowmo_time_factor = 0.08
+
+function on_option_change()
+    -- update settings
+    slowmo_resume_time = aoldri_axe_sounds_mcm.get_config("resume_time")
+    slowmo_time_factor = aoldri_axe_sounds_mcm.get_config("time_factor")
+end
+
+function resume_time()
+    get_console():execute("time_factor 1.0")
+    level.remove_pp_effector(9001)
+    return true
+end
+
+function play_impact_sound(weapon)
+    -- skip if player has no weapon out (it wasn't damage dealt directly eg. grenade)
+    local snd_obj = nil
+
+    if (melee_hitstop[weapon:section()]) then
+        snd_obj = snd_axe
+    end
+    if snd_obj == nil then return end
+    snd_obj:play(db.actor,0,sound_object.s2d)
+end
+
+function hitstop_effect(weapon)
+    if (melee_hitstop[weapon:section()]) then
+        get_console():execute("time_factor " .. slowmo_time_factor)
+        CreateTimeEvent("AoldriMelee","HitResume", slowmo_resume_time, resume_time)
+        level.add_pp_effector("blur.ppe", 9001, false)
+    end
+end
+
+function npc_on_death_callback(npc,killer)
+    local weapon = db.actor:active_item()
+    if db.actor:id() == killer:id() and db.actor:active_item() then
+        if (melee_hitstop[weapon:section()]) then
+            hitstop_effect(db.actor:active_item())
+        end
+    end
+end
+
+function npc_on_before_hit(npc,shit,bone_id,flags)
+    if not (shit.draftsman and shit.draftsman:id() == 0) then return end
+    if db.actor:active_item() == nil then return end
+    play_impact_sound(db.actor:active_item())
+end
+
+function monster_on_before_hit(npc,shit,bone_id,flags)
+    if not (shit.draftsman and shit.draftsman:id() == 0) then return end
+    if db.actor:active_item() == nil then return end
+    play_impact_sound(db.actor:active_item())
+end
+
+function on_game_start()
+    RegisterScriptCallback("npc_on_death_callback",npc_on_death_callback)
+    RegisterScriptCallback("npc_on_before_hit",npc_on_before_hit)
+    RegisterScriptCallback("on_option_change",on_option_change)
+    RegisterScriptCallback("monster_on_before_hit",monster_on_before_hit)
+    on_option_change()
+end

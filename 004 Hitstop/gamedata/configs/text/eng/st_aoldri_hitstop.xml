@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+<string id="ui_mcm_menu_aoldri_axe_sounds">
+	<text>Melee Hit Stop</text>
+</string>
+
+<string id="ui_mcm_aoldri_axe_sounds_title">
+	<text>Melee Slowmo on Death</text>
+</string>
+
+<string id="ui_mcm_aoldri_axe_sounds_resume_time">
+	<text>Slowdown Length</text>
+</string>
+
+<string id="ui_mcm_aoldri_axe_sounds_time_factor">
+	<text>Slowdown Time Factor (Affects Slowdown Length)</text>
+</string>
+
+</string_table>

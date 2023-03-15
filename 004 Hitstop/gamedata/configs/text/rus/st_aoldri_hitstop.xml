@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+<string id="ui_mcm_menu_aoldri_axe_sounds">
+	<text>Удар в ближнем бою Остановить</text>
+</string>
+
+<string id="ui_mcm_aoldri_axe_sounds_title">
+	<text>Ближний бой Замедленное движение на смерть</text>
+</string>
+
+<string id="ui_mcm_aoldri_axe_sounds_resume_time">
+	<text>Продолжительность замедления</text>
+</string>
+
+<string id="ui_mcm_aoldri_axe_sounds_time_factor">
+	<text>Коэффициент времени замедления (влияет на продолжительность замедления)</text>
+</string>
+
+</string_table>

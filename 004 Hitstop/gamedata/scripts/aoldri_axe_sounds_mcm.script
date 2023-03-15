@@ -1,0 +1,22 @@
+-- mcm Settings Script by BarryBogs
+
+function on_mcm_load()
+    op = {
+			id= "aoldri_axe_sounds", sh=true ,gr =
+			{
+			    { id = "title", type= "slide", link= "hitstop_mcm_banner", text= "", --[[size= {512,50},]]spacing = 20 },
+				{ id = "resume_time", type = "track", val = 2, max = 0.1, min = 0.01, step = 0.01, def = 0.06},
+				{ id = "time_factor", type = "track", val = 2, max = 0.1, min = 0.01, step = 0.01, def = 0.08},
+			}
+		}
+    return op
+end
+
+local defaults = {
+    ["resume_time"] = 0.06,
+	["time_factor"] = 0.08,
+}
+
+function get_config(key)
+    if ui_mcm then return ui_mcm.get("aoldri_axe_sounds/"..key) else return defaults[key] end
+end
